@@ -1,0 +1,78 @@
+{
+  "interactionModel": {
+    "languageModel": {
+      "invocationName": "ink story",
+      "intents": [
+        {
+          "name": "SelectOption",
+          "samples": [
+            "I'll go with {option}",
+            "we'll go with {option}",
+            "let's go with {option}",
+            "I will go with {option}",
+            "we will go with {option}",
+            "I'll do {option}",
+            "we'll do {option}",
+            "let's do {option}",
+            "I will do {option}",
+            "we will do {option}",
+            "I think it's {option}",
+            "we think it's {option}",
+            "I want {option}",
+            "we want {option}"
+          ],
+          "slots": [
+            {
+              "name": "option",
+              "type": "Option"
+            }
+          ]
+        },
+        {
+          "name": "OptionOnly",
+          "samples": [
+            "{option}"
+          ],
+          "slots": [
+            {
+              "name": "option",
+              "type": "Option"
+            }
+          ]
+        },
+        {
+          "name": "AMAZON.StartOverIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.HelpIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.FallbackIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.CancelIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.StopIntent",
+          "samples": []
+        }
+      ],
+      "types": [
+        {
+          "name": "Option",
+          "values": [
+            {
+              "name": {
+                "value": "this is a dummy option that will be replaced"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

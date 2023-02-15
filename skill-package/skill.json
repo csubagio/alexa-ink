@@ -1,0 +1,31 @@
+{
+  "manifest": {
+    "publishingInformation": {
+      "locales": {
+        "en-US": {
+          "name": "Ink Starter",
+          "summary": "A working generic implementation of intagrating an Ink game with Alexa",
+          "description": "Look for documentation on the Alexa Skills Kit in general, and at github.com/csubagio/alexa-ink to understand how to modify the skill to support your game!",
+          "examplePhrases": [
+            "Alexa, open Ink Starter"
+          ],
+          "keywords": ["game", "games", "screen", "graphics", "interactive fiction", "ink", "narrative", "choose your own adventure"]
+        }
+      },
+      "isAvailableWorldwide": true,
+      "testingInstructions": "Explain to the the Alexa team broadly how to start your game and how it works, so they can verify that it's running correctly across a range of Alexa devices.",
+      "category": "GAMES",
+      "distributionCountries": []
+    },
+    "apis": {
+      "custom": {
+        "interfaces": [
+          {
+            "type": "ALEXA_PRESENTATION_HTML"
+          }
+        ]
+      }
+    },
+    "manifestVersion": "1.0"
+  }
+}
