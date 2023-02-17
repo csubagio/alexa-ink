@@ -10,6 +10,4 @@ This repository contains a variety of components that are useful when constructi
 1. Use the Alexa code editor to replace the contents of the story.ink file with your story.
 1. Deploy the skill and enjoy your game!
 
-
-
-## FAQs
+For more details, see [the documentation site.](https://csubagio.github.io/alexa-ink/)
