@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+  
+
+  <head>
+    <meta charset="utf-8">
+    <title>Alexa Ink</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,700;1,400&display=block" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code&display=block" rel="stylesheet">
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+      }
+      
+      body {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 12pt;
+        padding: 1em 4em;
+        line-height: 1.7;
+        border-left: 2em solid rgb(59, 59, 59);
+        color: rgb(7, 7, 50);
+      }
+      
+      code {
+        font-family: "Fira Code", monospace;
+        font-variant-ligatures: none;
+      }
+
+      a {
+        text-indent: 0;
+        text-decoration: none;
+        color: black;
+        background: 1px solid rgb(255, 250, 197);
+        border: 1px solid rgb(195, 181, 24);
+        border-bottom: 3px solid rgb(59, 55, 6);
+        display: inline-block;
+        border-radius: 0.5em 0;
+        padding: 0.0em 0.3em;
+        margin: -3px 0;
+        transition: background-color,transform 200ms;
+      }
+      
+      a:hover {
+        background:rgb(255, 241, 90);
+        transform: translate(0, -0.2em);
+      }
+      
+      a:visited {
+        color: rgb(43, 41, 54);
+        border: 1px solid rgb(212, 207, 159);        
+        background: 1px solid rgb(255, 255, 249);
+      }
+      
+      h1 {
+        margin-bottom: 1em;  
+      }
+      
+      h2 {
+        margin-bottom: 1em;     
+        text-indent: 0;   
+      }
+      
+      #content {
+        margin-bottom: 4em;
+      }
+      
+      #content p {
+        max-width: 32em;
+        margin-bottom: 1em;
+        text-indent: 2em;
+      }
+      
+      #content p+h2 {
+        margin-top: 3em;
+      }
+
+      #content code+h2 {
+        margin-top: 3em;
+      }
+
+      #content table+h2 {
+        margin-top: 3em;
+      }
+
+      #content table {
+        margin-bottom: 2em;
+        text-indent: 2em;
+        border-collapse: collapse;
+      }
+      
+      #content table td {
+        border-right: 1px solid rgba(195, 192, 209, 0.256);
+        text-indent: 0;
+        padding: 0.1em 1em;
+      }
+      
+      #content table tr {
+        border-bottom: 1px dotted rgba(195, 192, 209, 0.5);
+        text-indent: none;
+      }
+      
+      #content table tr:last-child, th:first-child {
+        border-bottom: none;
+      }
+      
+      #content table td:last-child, th:last-child {
+        border-right: none;
+      }
+      
+      #content table img {
+        max-height: 15em;
+      }
+      
+      #content ol {
+        margin-left: 2em;
+      }
+      
+      #content li {
+        max-width: 32em;
+      }
+      
+      #content h3 {
+        text-decoration: underline;
+      }
+      
+      #content .hashtag {
+        font-family: monospace;
+        color: #04f;
+      }
+
+      #content .command {
+        font-family: monospace;
+        color: rgb(145, 125, 10);
+      }
+      
+      #content code {
+        display: block;
+        width: auto;
+        white-space: pre-wrap;
+        border-top: 1px solid rgb(195, 192, 209);
+        border-bottom: 1px solid rgb(195, 192, 209);
+        border-left: 1em solid rgb(195, 192, 209);
+        padding: 1em;
+        margin-bottom: 1.5em;
+        margin-left: -1em;
+        font-weight: normal;
+      }
+      
+      #content code p {
+        max-width: none;
+        text-indent: -2ch;        
+        padding-left: 2ch;
+        margin-bottom: 0.3em;
+      }
+
+      .faq {
+        margin-bottom: 2em;
+      }
+      
+      #faqs h3 {
+        margin-bottom: 1em;
+      }
+      
+      #faqs p {
+        padding-left: 1em;
+        max-width: 32em;
+        margin-bottom: 1em;
+      }
+      
+      .todo {
+        background-color: rgb(79, 17, 17);
+        padding: 1em;
+        color: white;
+        margin: 2em 2em 2em auto;
+        border-radius: 0.25em;
+      }
+    </style>
+  </head>
+  
+  
+  <body>
+    <div id="header"><span id="title"></span><span id="byline"></span></div>
+    <div id="content">
+      <h1>Alexa - Ink</h1>
+
+      <h2>Introduction</h2>
+
+      <p><a href="https://www.inklestudios.com/ink/">Ink</a> is an open source interactive fiction engine made by Inkle Studios, used to drive hit games like 80 Days, Heaven's Vault and Overboard! It provides a great markdown like syntax for describing interaction flow, as well as extensive hooks to drive game client behavior outside of the story.
+      </p>
+        
+      <p><a href="https://www.amazon.com/gp/browse.html?node=21576558011">Alexa</a> is a digital personal assistant that runs on a large variety of hardware, including the Echo and Fire TV line of Amazon devices. <a href="https://www.amazon.com/gp/browse.html?node=13727921011">Alexa Skills</a> is a mechanism to expand Alexa's capabilities, freely available to developers. Alexa customers can enable and pay for new skills in the Alexa Skill Store.
+      </p>
+      
+      <p>Alexa Ink is a template to easily combine the two to create an interactive audio/visual story that can be enjoyed on any Alexa enabled device. To create your own, you'll need to:
+        <ol>
+          <li>Write an Ink story. Try the <a href="https://github.com/inkle/inky">Inky editor,</a> it's pretty awesome!</li>
+          <li>Create a free Amazon account, if you don't have one yet.</li>
+          <li>Use the Amazon Developer Portal to create a new skill using this template.</li>
+          <li>Edit the skill to replace the example story with your own.</li>
+          <li>Test your story, either in the simulator on the developer website, or on a real device.</li>
+          <li>Publish your story for the world to enjoy!</li>
+        </ol>
+      </p>
+      
+      <p class="todo">todo: fill in details about hosting, add step by step hosted skill deployment.</p>
+      
+      <h2>Colophon</h2>
+      
+      <p>
+        Alexa Ink honors the semi standardized ink convention of noting colophon information as global tags at the top of the story file. You should minimally indicate the #title and #author. These will be displayed on Alexa devices that have screens.
+      </p>
+      <p>
+        By default, when your story launches for the first time Alexa will announce the story using information from the colophon. You can replace this by including an optional #introduction tag with the text you'd like read out. You can also leave it empty to just delete the introduction.
+      </p>
+      <p>
+        When your story is launched again later, if it's been more than a few minutes since the last time, a welcome back message will play before the story resumes where the reader left off by repeating the last presentation. You can customize this one with a #resumption.
+      </p>
+      <p>
+        When your story ends, i.e. when there are no more options for the player to pursue, then Alexa will tack on a "The End" to the last turn's presentation, before offering the player the option to start over. You can customize this with a #ending.
+      </p>
+      <p>
+        There are a few automatically generated elements to the story presentation, including interstitial sound effects, and the visual chrome on devices with screens. You can select one of several styles to apply to your story with #style. More details below.
+      </p>
+      <p>
+        Here's an example colophon with all possible fields. 
+      </p>
+      <code>
+        #title: The Intercept
+        #author: Inkle Studios
+        #introduction: This is the Intercept, an Inkle Studios story.
+        #resumption: Last time, on the Intercept.
+        #ending: The End.
+        #style: typewriter
+      </code>
+      
+      <h2>Commands: Images, Audio, and more</h2>
+      <p>        
+        You can embed additional presentation commands in your story that will alter how your story looks and sounds. These are uniformly indicated using using parentheses, where the first character in the parentheses is an exclamation mark. Any content inside these parentheses will not be printed or read out. Each parentheses may contain only one command, but you may include as many parenthesized commands as necessary on the same line.
+      </p>
+      <p>
+        To display an image, you'll need to find one online or host it in a visible place, and then just include the URL in a command. As long as there is a ".jpg" or ".png" filename in the URL, it'll be displayed. Note that the position of the command matters: the image will not be revealed until the text preceeding it in the line has been displayed first.
+      </p>
+      <code>
+        (! https://mywebsite.com/creepy-house.jpg ) The house sat a the end of a dirt road, surrounded by fields. 
+      </code>
+      
+      <p>
+        Similarly to play an audio file, you can include either a ".mp3" or ".ogg" URL in a command. Again: position matters, as the audio will not play until the preceeding text has been read. By default, the text that comes after will wait for the audio to complete. You can modify that timing with one of two optional parameters. Specify "delay" to indicate how much of the audio should be played, in seconds, before the subsequent content resumes. Specify "overlap" to specify that value relative to the end of the audio instead. For example:
+      </p>
+      <code>
+        // this line will wait until the creaking door sound is finished before continuing
+        You approach the house, and give the dodgy looking door a careful shove (! https://mywebsite.com/creaking-door.ogg) before walking in.
+        
+        // this line will wait exactly 3.5 seconds before saying the next part over the top of the creaking door
+        You approach the house, and give the dodgy looking door a careful shove (! https://mywebsite.com/creaking-door.ogg delay=3.5) before walking in.
+
+        // this line will wait until 2 seconds seconds before the creaking door is done, to say the next part
+        You approach the house, and give the dodgy looking door a careful shove (! https://mywebsite.com/creaking-door.ogg overlap=2) before walking in.
+      </code>
+      
+      <p>
+        If you'd like to include longer audio, like music or an ambiance track, then prefix your audio URL with the keyword "music". There can only be one music track playing at any one time, so each subsequent music command will fade out the old and fade in the new. Music tracks will loop until explicitly replaced. To stop playing music, you can issue the music command without a URL.
+      </p>
+      <code>
+        # title The Thrilling Story
+        === start ===
+        (! https://mywebsite/media/totally-thrilling-intro.ogg)
+        You'll never believe this story, but I'm going to tell it to you anyway. 
+        You're standing in front of the old Farmer house.
+        
+        * [open the door]
+          You push through, and are greeted with an eerie silence (! music https://mywebsite/media/creepy-ambiance.ogg)
+          
+        - It's dark inside, the air smells musty.
+        
+        * [turn on the lights]
+          You flip the light switch by the door, which turns on disco lights and starts music playing? (! music https://mywebsite/media/disco-groove.ogg)
+      </code>
+      
+      <p>If you'd like to replace the Alexa reading of your story with pre recorded voice overs, you can do so by adding the audio URL for each line in a command prefixed with "vo". This instructs the system to display your text on screen, but replace it with the file in the audio stream.</p>
+      <code>
+        === start ===
+        (! https://mywebsite/media/totally-thrilling-intro.ogg)
+        You'll never believe this story, but I'm going to tell it to you anyway. (! vo https://mywebsite/media/intro-1.ogg)
+        You're standing in front of the old Farmer house. (! vo https://mywebsite/media/intro-2.ogg)
+      </code>
+
+      <p>
+        If you are using the Alexa Hosted Skills system, you can use its S3 bucket to host your image and audio files. If you do, prefix your folder and filename with "hosted://" instead. You can freely mix and match this with materials hosted on other websites.
+      </p>
+      <code>
+        === start ===
+        (! hosted://music-stuff/totally-thrilling-intro.ogg)
+        (! hosted://creepy-house.jpg)
+        You'll never believe this story, but I'm going to tell it to you anyway. (! vo https://mywebsite/voice-overs/intro-1.ogg)
+      </code>
+      
+      <!--
+        <p>
+          There are also hundreds of free useful sounds in the <a href="https://developer.amazon.com/en-US/docs/alexa/custom-skills/ask-soundlibrary.html">Alexa Skills Kit Sound Library</a>. Use a "soundbank://" to access these by name.
+        </p>
+        <code>
+        </code>
+        
+        
+        <p>
+          To avoid having to specify your website in every single command, you can specify a common asset root in your colophon to use in every URL that does NOT begin with http or https. 
+        </p>
+        <code>
+          # title The Creepy House
+          # asset root: https://mywebsite/media/
+          
+          === start ===
+          (! totally-thrilling-intro.ogg) // this would actually go play https://mywebsite/media/totally-thrilling-intro.ogg
+        </code>
+        
+        <p>If you stick to Alexa text to speech reading your story, you can generally pace its reading with regular punctuation; the text to speech will insert pauses when it sees full stops and commas. If you need a longer gap, you can add a pause command.</p>
+        <code>
+          They say somewhere out there, on cold nights (! pause=3.5s) you can still hear the howling.
+        </code>
+      -->
+
+      <p>
+        Alexa Ink will generally display text and images a little ahead of the narration, giving faster players something to follow, and the opportunity to skip ahead when they know where they're going. Occassionally this will interfere with your intended pacing, maybe ruin a punchline or distract from a dramatic moment. You can ask for the visual and audio presentation to wait for each other by adding a sync command.
+      </p>
+      <code>
+        What do you call a bagel that can fly? (!sync) (! airplane-bagel.jpg) A plain bagel!
+      </code>
+      
+      <h2>Adding a paywall</h2>
+      <p>        
+        Alexa Ink supports... 
+      </p>
+      <p class="todo">todo: explain the monetization scheme, paywall vars, etc</p>
+      
+      <h2>Styles</h2>
+      <p>Alexa Ink ships with a few different presentation presets. As noted above, you can select which one should be active with a #style in your colophone.</p>
+      <code>
+        #title: Steamy Times Aboard the Queen Elizabeth II
+        #style: romance
+      </code>
+      
+      <p>Following are the currently available styles. If you'd like to propose a new one, feel free to file a new issue at the github repo!</p>
+      <table>
+        <tbody>
+          <tr>
+            <td>minimal</td>
+            <td>This is the default style: clean, modern.</td>
+            <td><img src="./style-minimal.jpg"></td>
+          </tr>
+          <tr>
+            <td>typewriter</td>
+            <td>It comes with a vintage typewriter font, and matching clacking keys.</td>
+            <td><img src="./style-typewriter.jpg"></td>
+          </tr>
+          <tr>
+            <td>hacker</td>
+            <td>It's a Unix system, I know this!</td>
+            <td><img src="./style-hacker.jpg"></td>
+          </tr>
+
+          <tr>
+            <td>romance</td>
+            <td>This one is laid out in lavender with a flourish. Sound effects are dreamy.</td>
+            <td><img src=""></td>
+          </tr>
+          <tr>
+            <td>fantasy</td>
+            <td>Here be dragons.</td>
+            <td><img src=""></td>
+          </tr>
+          <tr>
+            <td>spacey</td>
+            <td>Welcome to the Starship Storyteller. Caution: adventure ahead.</td>
+            <td><img src=""></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p class="todo">todo: fill in more details about the other styles</p>
+      
+      
+    </div>
+    <div id="faqs">
+      <h2>Frequently Asked Questions</h2>
+      
+      <div class="faq">
+        <h3>How much does it cost to make an Alexa Ink Story?</h3>
+        <p>Nothing but your time, to start with. The code in this template is provided free of charge, under the MIT license. Any art and audio is similarly free, under the Creative Commons License. As an avid fan of both interactive fiction and Alexa Games, I just want to see more of it in the world :).</p>
+        <p>As your story develops, if it's outside of your wheelhouse, you may want to invest in artists to create illustrations, sound effects, and voice over work.</p>
+        <p>Eventually, if your story is being enjoyed by thousands of players every month, you may run out of the free resources provided by an Alexa Hosted Skill, and will need to investigate upgrading to a custom hosting solution.</p>
+      </div>
+        
+      <div class="faq">        
+        <h3>Can I charge money for my stories?</h3>
+        <p>Yes! As described above, using this template you can add a paywall at any point in your story. With a little more engineering work, you could charge at multiple points, for example if you wanted to go episodic and charge for each episode. Alexa skills tend to work best when there's a free component though, so even if it's just your intro, you should think about what you should give your readers to make them eager to part with their cash!</p>
+      </div>
+
+      <div class="faq">
+        <h3>Can I replace the website styling altogether?</h3>
+        <p>Sure! This is a template, you're welcome to fork it and change anything you like, if you are so technically inclined.</p>
+        <p>For a total presentation overhaul, you can host your own HTML page entirely. You'd specify this by changing the URL in index.js in the skill backend.</p>
+        <p>You can recycle most of the skill endpoint and Alexa glue code for the web app by ... </p>
+        <p class="todo">todo: fill in details about creating new styles, or more complex apps</p>
+      </div>
+      
+
+      <!--
+        
+        <h2>Voices</h2>
+        <p>
+          Your story will by default be read by the standard Alexa voice. As your readers make their choices, the next part of the story will be read out loud, and if a screen is present, text will appear. Alexa provides a few other voices that you can use to mix things up. To specify a voice, you prefix any story line with a voice name, followed by a colon, for instance: 
+        </p>
+        <code>
+          Joanna: He told me that he'd pick up the onions. He did not.
+        </code>
+        
+        <p>By default a voice specified this way is considered the narrator, and is carried through an entire line. Alongside the narrator voice, you can also specify a character voice in quotes. This will switch voice within quoted sections of the line. You may also specify just the character voice, leaving the default narrator for the rest of the line.</p>
+        <code>
+          Alexa "Matthew": "Here, now," Harris corrects. "We are not talking to everyone. I can imagine you might feel pretty sore about that. I can imagine you feeling picked on.
+          "Brian": "I'm fine," I reply. "This is all some misunderstanding and the quicker we have it cleared up the better."
+        </code>
+        
+        <p>
+          If you'd like to switch the default voice for the entire story, you can include a "narrator" tag in your colophon, like so:
+        </p>
+        <code>
+          # author: Inkle Studios
+          # narrator: Brian
+        </code>
+        
+        
+        <p>The available built in voices are:</p>
+        <table>
+          <tbody>
+            <tr> <td>Ivy</td> <td>US female</td> </tr>
+            <tr> <td>Joanna</td> <td>US female</td> </tr>
+            <tr> <td>Joey</td> <td>US male</td> </tr>
+            <tr> <td>Justin</td> <td>US male</td> </tr>
+            <tr> <td>Kendra</td> <td>US female</td> </tr>
+            <tr> <td>Kimberly</td> <td>US female</td> </tr>
+            <tr> <td>Matthew</td> <td>US male</td> </tr>
+            <tr> <td>Salli</td> <td>US female</td> </tr>     
+            
+            <tr> <td>Nicole</td> <td>Ozzie female</td> </tr>     
+            <tr> <td>Russell</td> <td>Ozzie male</td> </tr>     
+            
+            <tr> <td>Amy</td> <td>British female</td> </tr>     
+            <tr> <td>Brian</td> <td>British male</td> </tr>     
+            <tr> <td>Emma</td> <td>British male</td> </tr>     
+            
+            <tr> <td>Geraint</td> <td>Welsh male</td> </tr>     
+            
+            <tr> <td>Aditi</td> <td>Indian male</td> </tr>     
+            <tr> <td>Raveena</td> <td>Indian female</td> </tr>     
+          </tbody>
+        </table>
+        
+      -->
+        
+    </div>
+    
+    
+    <div id="footer"></div>
+    
+    
+    
+    
+    
+    <script>
+      let links = document.getElementsByTagName('a');
+      for ( let i=0; i<links.length; ++i ) {
+        let a = links[i];
+        a.target = "_blank";
+      }
+      
+      let codes = document.getElementsByTagName('code');
+      for ( let i=0; i<codes.length; ++i ) {
+        let c = codes[i];
+        let lines = c.innerText.trim().split('\n');
+        if (lines.length > 1) {
+          let match = lines[1].match(/^\s+/);
+          if ( match ) {
+            let firstIndent = match[0];
+            for (let i=1; i<lines.length; ++i ) {
+              lines[i] = lines[i].replace(firstIndent,'');
+              if ( lines[i].trim().length === 0 ) {
+                lines[i] = "&nbsp;"
+              }
+            }
+          }
+        }
+        lines = lines.map( l => `<p>${l}</p>`);
+        c.innerHTML = lines.join('');
+      }
+      
+      let pars = document.getElementsByTagName('p');
+      for ( let i=0; i<pars.length; ++i ) {
+        let p = pars[i];
+        let html = p.innerHTML;
+        let test = /#[^\s]+/g;
+        html = html.replace( test, (m) => `<span class='hashtag'>${m}</span>` )
+        test = /\(\![^\)]+\)/g;
+        html = html.replace( test, (m) => `<span class='command'>${m}</span>` )
+        p.innerHTML = html;
+      }      
+      
+    </script>
+  </body>
+  
+  
+</html>
