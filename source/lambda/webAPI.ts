@@ -21,7 +21,6 @@ export class HTMLMessageProcessor implements ASKCore.RequestHandler {
 
 
 export function hasWebAPI(hi: ASKCore.HandlerInput): boolean {
-  return false;
   return ASKCore.getSupportedInterfaces(hi.requestEnvelope)['Alexa.Presentation.HTML'] !== undefined;
 }
 
