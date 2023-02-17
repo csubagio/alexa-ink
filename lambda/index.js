@@ -163,11 +163,11 @@ exports.handler = Alexa.SkillBuilders.custom()
         console.log(JSON.stringify(response));
     })
     .addRequestHandlers(
+        CancelAndStopIntentHandler,
         new LaunchProcessor,
         new IntentProcessor,
         new HTMLMessageProcessor,
         PurchaseConfirmationHandler,
-        CancelAndStopIntentHandler,
         SessionEndedRequestHandler)
     .addErrorHandlers(
         ErrorHandler)

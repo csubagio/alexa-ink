@@ -3,7 +3,7 @@ import path from "path"
 import * as inkjs from "inkjs" 
 import {Story} from "inkjs/engine/Story" 
 import {Colophon} from "../web/colophone";
-import {AudioLine, LinePart} from "../web/alexaTypes";
+import {AudioPart, LinePart, VoiceOverPart} from "../web/alexaTypes";
 
 
 const storyPath = process.env['story-path'] || path.join(__dirname,'story.ink');
@@ -46,8 +46,10 @@ function matchAssetType( filename: string, extensions: string[] ): boolean {
 export const colophon: Colophon = { 
   title: globalTags['title'] || '',
   author: globalTags['author'] || '',
+  introduction: globalTags['introduction'] || '',
+  resumption: globalTags['resumption'] || '',
+  ending: globalTags['ending'] || "The End.",
   style: (globalTags['style'] as any) || 'typewriter',
-  theEnd: globalTags['the end'] || "The End."
 };
 
 const validAudioExtensions = ['.mp3', '.ogg'];
@@ -62,7 +64,7 @@ interface Option {
 
 export interface Step {
   generatedTime: number;
-  lines: LinePart[];
+  parts: LinePart[];
   options: Option[];
   storyEnded?: true; 
 }
@@ -79,7 +81,7 @@ const cmdRegex = /\(\!\s*([^\)]*)\)/g;
 // any quoted string
 // any string that has alpha numeric plus _ or - or .
 // just the operator characters: = 
-const wordsRegex = /"([^"]*)"|([\w\.\_]+)|(=)/g;
+const wordsRegex = /"([^"]*)"|([\w\.\_\:\/]+)|(=)/g;
 
 interface Word {
   raw: string;
@@ -120,20 +122,22 @@ function splitWords(text: string): Word[] {
 
 function parseLine(text: string, parts: LinePart[]): void {
   // step through line, extracting any commands 
-  const oldLast = parts.length;
+  const newParts: LinePart[] = [];
   
   cmdRegex.lastIndex = 0;
   let head = 0;
   let match = cmdRegex.exec( text );
+  let lineVO: VoiceOverPart | undefined;
+  let haveNonTextAudio = false;
   
-  for (let guard=0; guard<20; ++guard) {
+  for (let guard=0; guard<100; ++guard) {
     if ( !match ) break;
     
     // all text up to the command 
     if ( match.index > head ) {
       let fragment = text.substring(head, match.index).trim();
       if ( fragment.length > 0 ) {
-        parts.push({ txt: fragment });
+        newParts.push({ txt: fragment });
       }
     }
     head = match.index + match[0].length;
@@ -147,17 +151,22 @@ function parseLine(text: string, parts: LinePart[]): void {
       switch ( words[0].key ) {
         case 'vo': {
           // vo means: replace text in this line with this audio
-          if ( words[1] ) {
-            parts.push({ vo: words[1].raw });
+          if ( lineVO ) {
+            console.error(`ignoring more than one vo in line ${text}`);
           } else {
-            console.error(`vo command has no filename? ${cmd}`);
+            lineVO = { vo: words[1].raw };
+            if ( words[1] ) {
+              newParts.push(lineVO);
+            } else {
+              console.error(`vo command has no filename? ${cmd}`);
+            }
           }
           break;
         }
         case 'music': {
           // music means: replace the file in the music track with this one
           if ( matchAssetType(words[1].raw, validAudioExtensions) ) {
-            parts.push({ mus: words[1].raw });
+            newParts.push({ mus: words[1].raw });
           } else {
             console.error(`music command has no filename? ${cmd}`);
           }
@@ -166,15 +175,17 @@ function parseLine(text: string, parts: LinePart[]): void {
         case 'sync': {
           // means: the visual presentation and audio presentation wait
           // for each other to meet up at this point
-          parts.push({ sync: true });
+          newParts.push({ sync: true });
+          break;
         }
         default: { 
           // otherwise it may just be an asset reference
           let filename = words[0].raw;
           
           if ( matchAssetType(filename, validAudioExtensions) ) {
-            let part: AudioLine = { sfx: filename };
-            parts.push(part);
+            let part: AudioPart = { sfx: filename };
+            newParts.push(part);
+            haveNonTextAudio = true;
             // with audio, could also have the following 
             for ( let i=1; i<words.length; ++i ) {
               let word = words[i];
@@ -198,9 +209,9 @@ function parseLine(text: string, parts: LinePart[]): void {
               } 
             }
           } else if ( matchAssetType(filename, validImageExtensions) ) {
-            parts.push({ img: filename });
+            newParts.push({ img: filename });
           } else {
-            console.error(`unrecognized command: ${cmd}`);
+            console.error(`unrecognized command: ${cmd}, ${JSON.stringify(words)}`);
           }
         }
       }
@@ -211,14 +222,30 @@ function parseLine(text: string, parts: LinePart[]): void {
     }
     match = cmdRegex.exec(text);
   }
-  
+
+  // anything left is just text
   let remainder = text.substring(head).trim();
   if ( remainder ) {
-    parts.push({ txt: remainder });
+    newParts.push({ txt: remainder });
+  }
+
+  if ( newParts.length > 0 ) {
+    (newParts[newParts.length-1] as any).eol = true;
   }
   
-  if ( parts.length > oldLast ) {
-    (parts[parts.length-1] as any).eol = true;
+  // if we did find VO, go back and tag all the txt elements 
+  if ( lineVO !== undefined ) {
+    for ( let part of newParts ) {
+      if ( "txt" in part ) {
+        part.vod = true;
+      }
+    }
+  }
+
+  newParts.forEach( p => parts.push(p) );
+  
+  if ( (lineVO !== undefined) && haveNonTextAudio ) {
+    console.error("found both vo and audio items in a single line, this will likely not do what is expected, i.e. all audio items will just play at the start, over top of the voice over. You very likely want to mix the audio into the vo file instead.");
   }
 }
 
@@ -226,7 +253,7 @@ function parseLine(text: string, parts: LinePart[]): void {
 function generateStep(story: Story): Step {
   const step: Step = {
     generatedTime: Date.now(),
-    lines: [], 
+    parts: [], 
     options: []
   };
   
@@ -234,7 +261,7 @@ function generateStep(story: Story): Step {
     // next line of story
     let text = story.Continue();
     if ( text ) {
-      parseLine( text, step.lines );
+      parseLine( text, step.parts );
     }
   }
   

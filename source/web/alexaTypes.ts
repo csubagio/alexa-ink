@@ -1,40 +1,68 @@
 import {Colophon} from "./colophone";
 import {OptionDefinition} from "./options";
 
-export interface TextLine {
-  txt: string;
-  eol?: true;
-  tts?: string;
+
+export interface TextPart {
+  txt: string; 
+  tts?: string; // tts URL, if requested
+  vod?: true; // do not TTS, replaced with a vo file
 }
 
-export interface VOLine {
-  vo: string;
+  /**
+   * Indicates that all text content on this line 
+   * should be replaced by this voice over audio 
+   * instead.
+   *  */ 
+export interface VoiceOverPart {
+  vo: string;  
 }
 
-export interface AudioLine {
+export interface AudioPart {
   sfx: string;
-  delay?: number;
+  // By default, AudioPart will block the next thing
+  // until the sound is complete, i.e. back to back.
+  // Setting delay to a positive number instead begins
+  // playing the next thing at that time. 
+  // Setting it to a negative number begins playing 
+  // the next audio that many seconds before the end 
+  // of this AudioPart.
+  delay?: number; // seconds
 }
 
-export interface MusicLine {
+export interface MusicPart {
+  // asks the player to switch the audio content playing 
+  // in the music channel. There can only be up to one
+  // thing playing in that channel.
   mus: string;
+  loop?: boolean;
 }
 
-export interface ImageLine {
+export interface ImagePart {
+  // asks the story to display an image
   img: string;
-  eol?: true;
 }
 
-export interface SyncLine {
+export interface SyncPart {
+  // indicates that the visuals and the audio should 
+  // both reach this point before either continue
   sync: true;
 }
 
-export interface EndOfStoryLine {
+export interface EndOfStoryPart {
+  // represents the end of a story path, i.e. when there
+  // are no further options to pick from.
   end: true;
-  tts?: string;
+  tts?: string; // if present, TTS of the colophone's theEnd
 }
 
-export type LinePart = TextLine | VOLine | AudioLine | MusicLine | ImageLine | SyncLine | EndOfStoryLine;
+export interface EndOfLinePart {
+  // this marker indicates that this was the end of a single
+  // line in the Ink source. A single response may have several
+  // lines
+  eol?: true;
+}
+
+export type LinePart = TextPart | VoiceOverPart | AudioPart | MusicPart | ImagePart | SyncPart | EndOfStoryPart | EndOfLinePart;
 
 
 

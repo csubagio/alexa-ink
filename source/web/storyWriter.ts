@@ -1,5 +1,5 @@
 import {openMic} from "./alexa";
-import {AudioLine, EndOfStoryLine, ImageLine, LinePart, SyncLine, TextLine} from "./alexaTypes";
+import {AudioPart, EndOfStoryPart, ImagePart, LinePart, SyncPart, TextPart} from "./alexaTypes";
 import {theColophon} from "./colophone";
 import {pushDebug} from "./debug";
 import {showOptions} from "./options";
@@ -36,7 +36,7 @@ class TextElement implements PageElement {
   duration = 0;
   startTime = 0;
   
-  constructor(public part: TextLine, public paragraph: HTMLParagraphElement) {
+  constructor(public part: TextPart, public paragraph: HTMLParagraphElement) {
     const text = part.txt;
     this.span = document.createElement('span'); 
     paragraph.appendChild( this.span );
@@ -103,7 +103,7 @@ class ImageElement implements PageElement {
   delay = 1000;
   ready = false;
   
-  constructor(public part: ImageLine, public paragraph: HTMLParagraphElement) {
+  constructor(public part: ImagePart, public paragraph: HTMLParagraphElement) {
     this.img = document.createElement('img') as HTMLImageElement; 
     this.img.onload = ( () => this.ready = true );
     this.img.onerror = ( () => this.ready = true );
@@ -144,7 +144,7 @@ class VoiceOverElement implements PageElement {
   started = false;
   ended = false;
   
-  constructor( public part: TextLine|EndOfStoryLine, public first: boolean ) {
+  constructor( public part: TextPart|EndOfStoryPart, public first: boolean ) {
     if ( !first ) {
       this.preDelay = 250 + Math.floor( Math.random() * 500 );
     }
@@ -187,7 +187,7 @@ class SoundEffectElement implements PageElement {
   started = false;
   ended = false;
   
-  constructor( public part: AudioLine ) {
+  constructor( public part: AudioPart ) {
   }
   
   begin(): void {
@@ -210,7 +210,7 @@ class SoundEffectElement implements PageElement {
 class SyncElement implements PageElement {
   isDone = false;
   
-  constructor( public part: SyncLine, public syncIndex: number ) {}
+  constructor( public part: SyncPart, public syncIndex: number ) {}
   
   begin(): void {}
 
@@ -366,7 +366,7 @@ class StoryPage {
       
       if ( "end" in part ) {
         paragraph = this.newParagraph('the-end');
-        this.visualThread.push( new TextElement({txt:theColophon.theEnd}, paragraph));
+        this.visualThread.push( new TextElement({txt:theColophon.ending}, paragraph));
         storyEnded = true;
         if ( part.tts ) {
           this.audioThread.push( new VoiceOverElement(part, this.audioThread.isEmpty ) );

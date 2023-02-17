@@ -6,7 +6,8 @@ import * as StoryData from './storyData'
 import {OptionDefinition} from "../web/options"
 import {buildOptionsDynamicEntity} from "./entities"
 import {SkillPersistentData} from "./persistentData"
-import {getS3PreSignedUrl} from "./s3Asset"
+import {resolveAssetURL, getS3PreSignedUrl} from "./s3Asset"
+import {cleanAndWrapSSML} from "./ssml"
 
 
 export class HTMLMessageProcessor implements ASKCore.RequestHandler {
@@ -20,35 +21,20 @@ export class HTMLMessageProcessor implements ASKCore.RequestHandler {
 
 
 export function hasWebAPI(hi: ASKCore.HandlerInput): boolean {
+  return false;
   return ASKCore.getSupportedInterfaces(hi.requestEnvelope)['Alexa.Presentation.HTML'] !== undefined;
 }
 
-function cleanTTS(text: string): string {
-  // can't have <i> tags like in the sample story
-  text = text.replace(/\<i\>/g, ' ');
-  text = text.replace(/\<\/i\>/g, ' ');
-  // these brackets don't make sense
-  text = text.replace(/[\[\]]/g, ' ');
-  // these read wrong
-  text = text.replace(/\-/g, ' ');  
-  // clean up any extra space
-  text = text.replace(/\s+/g, ' ');
-  return text;
-}
 
 
-export function processURL(url: string): string {
-  if ( getS3PreSignedUrl ) {
-    return getS3PreSignedUrl("Media/" + url);
-  }
-  return url;
-}
+
+
 
 export function buildWebAPIStoryStep( hi: ASKCore.HandlerInput, step: StoryData.Step ): StoryBuildItems {
 
   const result: StoryBuildItems = { directives: [] }
   const options: OptionDefinition[] = [];
-  const presentation: LinePart[] = JSON.parse( JSON.stringify( step.lines ) );
+  const presentation: LinePart[] = JSON.parse( JSON.stringify( step.parts ) );
   const message: MessageFromSkill = {
     appendPresentation: presentation,
     setOptions: options
@@ -58,10 +44,10 @@ export function buildWebAPIStoryStep( hi: ASKCore.HandlerInput, step: StoryData.
   // sign any local references
   for ( let line of presentation ) {
     if ( "sfx" in line ) {
-      line.sfx = processURL(line.sfx);
+      line.sfx = resolveAssetURL(line.sfx) || line.sfx;
     }
     if ( "img" in line ) {
-      line.img = processURL(line.img);
+      line.img = resolveAssetURL(line.img) || line.img;
     }
   }
   
@@ -75,8 +61,7 @@ export function buildWebAPIStoryStep( hi: ASKCore.HandlerInput, step: StoryData.
   message.tts = tts; 
 
   let registerTTS = (key: string, text:string) => {
-    text = cleanTTS(text);
-    text = `<speak><amazon:domain name="long-form">${text}</amazon:domain></speak>`
+    cleanAndWrapSSML(text);
     tts[key] = { text, url: "" }
     transformers.push({
       inputPath: `tts.${key}.text`,
@@ -86,7 +71,7 @@ export function buildWebAPIStoryStep( hi: ASKCore.HandlerInput, step: StoryData.
   }
 
   presentation.forEach( (t,i) => {
-    if ( "txt" in t ) {
+    if ( ("txt" in t) && !("vod" in t) ) {
       const key = `t${i}`;
       t.tts = key;
       registerTTS( key, t.txt );
@@ -99,7 +84,7 @@ export function buildWebAPIStoryStep( hi: ASKCore.HandlerInput, step: StoryData.
   
   if ( step.storyEnded ) {
     const key = `theEnd`;
-    registerTTS( key, StoryData.colophon.theEnd );
+    registerTTS( key, StoryData.colophon.ending );
     presentation.push({ end: true, tts: key });
   }
   

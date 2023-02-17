@@ -4,15 +4,19 @@ import {ValidStyles} from "./styles";
 export interface Colophon {
   title: string;
   author: string;
+  introduction: string;
+  resumption: string;
+  ending: string;
   style: typeof ValidStyles[number];
-  theEnd: string;
 }
 
 export const dummyColophone: Colophon = {
   title: "The Story",
   author: "The Author",
+  introduction: "This is The Story, by The Author.",
+  resumption: "Resuming The Story, by The Author.",
+  ending: "The End.",
   style: "typewriter",
-  theEnd: "The End."
 }
 
 export const theColophon: Colophon = JSON.parse(JSON.stringify(dummyColophone));

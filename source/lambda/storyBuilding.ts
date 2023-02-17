@@ -12,5 +12,3 @@ export interface StoryBuildItems {
   directives: ASKModel.Directive[];
 }
 
-
-type StoryStepProcessor = ( hi: ASKCore.HandlerInput, step: Step ) => StoryBuildItems;

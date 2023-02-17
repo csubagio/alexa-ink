@@ -4,7 +4,9 @@
   "description": "[Ink](https://www.inklestudios.com/ink/) is an open source interactive fiction engine made by Inkle Studios, used to drive hit games like 80 Days, Heaven's Vault and Overboard! It provides a great markdown like syntax for describing interaction flow, as well as extensive hooks to drive game client behavior outside of the story.",
   "main": "index.js",
   "scripts": {
-    "build": "webpack -w",
+    "build": "webpack",
+    "test": "ts-mocha ./source/**/*.spec.ts",
+    "build-watch": "webpack -w",
     "test-watch": "ts-mocha ./source/**/*.spec.ts -w --watch-files '**/*.ts,**/*.ink'"
   },
   "author": "",

@@ -111,8 +111,10 @@ export function setupLocalTesting() {
           colophon: {
             title: "The Intercept",
             author: "Inkle Studios",
+            introduction: "",
+            resumption: "",
+            ending: "Story Over.",
             style: "typewriter",
-            theEnd: "Story Over."
           }
         })
         break;
@@ -190,6 +192,28 @@ export function setupLocalTesting() {
           "OK, fine, at this point it's probably a little too unwieldly for voice. By the time you get here, you'll forget the first choice."
         ]);
         pushStoryParts([ {txt: "Woah."} ]);
+        break;
+      }
+      
+      
+      
+      case 'z': {
+        onMessageReceived({
+          colophon: {
+            title: "The Intercept",
+            author: "Inkle Studios",
+            introduction: "",
+            resumption: "",
+            ending: "Story Over.",
+            style: "typewriter",
+          },
+          appendPresentation: [
+            { img: "bletchley.jpg", eol: true },
+            { txt: "They are keeping me waiting.", eol: true },
+            { txt: "The door was locked after I sat down.", eol: true } 
+          ]
+        })
+        spoofOptions(["Think", "Plan", "Wait"]);
         break;
       }
     }

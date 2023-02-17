@@ -64,6 +64,7 @@ export class IntentProcessor implements ASKCore.RequestHandler {
         }
         break;
       }
+      
     }
     
     const builder = hi.responseBuilder;

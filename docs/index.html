@@ -244,7 +244,22 @@
         To display an image, you'll need to find one online or host it in a visible place, and then just include the URL in a command. As long as there is a ".jpg" or ".png" filename in the URL, it'll be displayed. Note that the position of the command matters: the image will not be revealed until the text preceeding it in the line has been displayed first.
       </p>
       <code>
-        (! https://mywebsite.com/creepy-house.jpg ) The house sat a the end of a dirt road, surrounded by fields. 
+        // note, because // is a comment in ink, you must convert that to \/\/ in the URL
+        (! https:\/\/mywebsite.com/creepy-house.jpg ) The house sat a the end of a dirt road, surrounded by fields. 
+      </code>
+      
+      <p>
+        Because most of your story assets are likely to come from the same place online, Alexa Ink supports specifying one or more named "roots" for your URLs, which you can substitute throughout your story. A special built root in called "host" means that the asset is located in your Alexa Hosted Skill S3 bucket. For brevity, subsequent examples in this document will use that root.
+      </p>
+      <code>
+        // specify this up at the top of your story
+        #assetRoot: my = http:\/\/mywebsite.com/
+        
+        // the following image would be at http://mywebsite.com/creepy-house.jpg
+        (!my:creepy-house.jpg ) The house sat a the end of a dirt road, surrounded by fields.
+        
+        // the following image would come from your the pics folder in your hosted skills S3
+        There was an sign on the door. (!host:pics/door-sign.mp3)
       </code>
       
       <p>
@@ -252,13 +267,13 @@
       </p>
       <code>
         // this line will wait until the creaking door sound is finished before continuing
-        You approach the house, and give the dodgy looking door a careful shove (! https://mywebsite.com/creaking-door.ogg) before walking in.
+        You approach the house, and give the dodgy looking door a careful shove (! host:creaking-door.ogg) before walking in.
         
         // this line will wait exactly 3.5 seconds before saying the next part over the top of the creaking door
-        You approach the house, and give the dodgy looking door a careful shove (! https://mywebsite.com/creaking-door.ogg delay=3.5) before walking in.
+        You approach the house, and give the dodgy looking door a careful shove (! host:creaking-door.ogg delay=3.5) before walking in.
 
         // this line will wait until 2 seconds seconds before the creaking door is done, to say the next part
-        You approach the house, and give the dodgy looking door a careful shove (! https://mywebsite.com/creaking-door.ogg overlap=2) before walking in.
+        You approach the house, and give the dodgy looking door a careful shove (! host:creaking-door.ogg overlap=2) before walking in.
       </code>
       
       <p>
@@ -267,59 +282,32 @@
       <code>
         # title The Thrilling Story
         === start ===
-        (! https://mywebsite/media/totally-thrilling-intro.ogg)
+        (! host:totally-thrilling-intro.ogg)
         You'll never believe this story, but I'm going to tell it to you anyway. 
         You're standing in front of the old Farmer house.
         
         * [open the door]
-          You push through, and are greeted with an eerie silence (! music https://mywebsite/media/creepy-ambiance.ogg)
+          You push through, and are greeted with an eerie silence (!music host:creepy-ambiance.ogg)
           
         - It's dark inside, the air smells musty.
         
         * [turn on the lights]
-          You flip the light switch by the door, which turns on disco lights and starts music playing? (! music https://mywebsite/media/disco-groove.ogg)
+          You flip the light switch by the door, which turns on disco lights and starts music playing? (!music host:disco-groove.ogg)
       </code>
       
       <p>If you'd like to replace the Alexa reading of your story with pre recorded voice overs, you can do so by adding the audio URL for each line in a command prefixed with "vo". This instructs the system to display your text on screen, but replace it with the file in the audio stream.</p>
       <code>
         === start ===
-        (! https://mywebsite/media/totally-thrilling-intro.ogg)
-        You'll never believe this story, but I'm going to tell it to you anyway. (! vo https://mywebsite/media/intro-1.ogg)
-        You're standing in front of the old Farmer house. (! vo https://mywebsite/media/intro-2.ogg)
+        (! host:totally-thrilling-intro.ogg)
+        You'll never believe this story, but I'm going to tell it to you anyway. (! vo host:intro-1.ogg)
+        You're standing in front of the old Farmer house. (! vo host:intro-2.ogg)
       </code>
 
-      <p>
-        If you are using the Alexa Hosted Skills system, you can use its S3 bucket to host your image and audio files. If you do, prefix your folder and filename with "hosted://" instead. You can freely mix and match this with materials hosted on other websites.
-      </p>
-      <code>
-        === start ===
-        (! hosted://music-stuff/totally-thrilling-intro.ogg)
-        (! hosted://creepy-house.jpg)
-        You'll never believe this story, but I'm going to tell it to you anyway. (! vo https://mywebsite/voice-overs/intro-1.ogg)
-      </code>
-      
       <!--
         <p>
           There are also hundreds of free useful sounds in the <a href="https://developer.amazon.com/en-US/docs/alexa/custom-skills/ask-soundlibrary.html">Alexa Skills Kit Sound Library</a>. Use a "soundbank://" to access these by name.
         </p>
         <code>
-        </code>
-        
-        
-        <p>
-          To avoid having to specify your website in every single command, you can specify a common asset root in your colophon to use in every URL that does NOT begin with http or https. 
-        </p>
-        <code>
-          # title The Creepy House
-          # asset root: https://mywebsite/media/
-          
-          === start ===
-          (! totally-thrilling-intro.ogg) // this would actually go play https://mywebsite/media/totally-thrilling-intro.ogg
-        </code>
-        
-        <p>If you stick to Alexa text to speech reading your story, you can generally pace its reading with regular punctuation; the text to speech will insert pauses when it sees full stops and commas. If you need a longer gap, you can add a pause command.</p>
-        <code>
-          They say somewhere out there, on cold nights (! pause=3.5s) you can still hear the howling.
         </code>
       -->
 
@@ -327,7 +315,7 @@
         Alexa Ink will generally display text and images a little ahead of the narration, giving faster players something to follow, and the opportunity to skip ahead when they know where they're going. Occassionally this will interfere with your intended pacing, maybe ruin a punchline or distract from a dramatic moment. You can ask for the visual and audio presentation to wait for each other by adding a sync command.
       </p>
       <code>
-        What do you call a bagel that can fly? (!sync) (! airplane-bagel.jpg) A plain bagel!
+        What do you call a bagel that can fly? (!sync) (!airplane-bagel.jpg) A plain bagel!
       </code>
       
       <h2>Adding a paywall</h2>
